@@ -53,9 +53,31 @@ var contentManager = function(app, Content) {
         );
     });
 
+    app.post("/api/iseeq-store/remove", function(req, res) {
+        // get the application settings from the mongodb
+
+        var companyName = req.body.company;
+
+        Content.findOneAndDelete(
+            {
+                company: companyName
+            },
+            function(err, success) {
+                if (success) {
+                    res.status(200).json(success);
+                } else {
+                    res.status(404).json({
+                        msg: "Not found: " + companyName
+                    });
+                }
+            }
+        );
+    });
+
     app.post("/api/iseeq-store/add", function(req, res) {
         // insert into/overwrite existing application in mongodb document
         var companyName = req.body.company;
+        var displayName = req.body.displayName;
         var content = req.body.data; // the posted content should be a stringified object
 
         try {
@@ -64,7 +86,8 @@ var contentManager = function(app, Content) {
                     company: companyName
                 },
                 {
-                    data: content
+                    data: content,
+                    displayName: displayName
                 },
                 {
                     new: true,
@@ -77,7 +100,7 @@ var contentManager = function(app, Content) {
                         });
                     } else {
                         res.status(200).json({
-                            msg: "New settings: " + doc
+                            msg: doc
                         });
                     }
                 }
