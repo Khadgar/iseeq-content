@@ -10,43 +10,122 @@ class CompanyDetails extends Component {
         super(props);
         this.onCompanyAddClick = props.onCompanyAddClick;
         this.state = {
-            company: undefined,
-            displayName: undefined,
-            data: undefined
+            company: {
+                value: props.content.company
+                    ? props.content.company
+                    : "",
+                isValid: true
+            },
+            displayName: {
+                value: props.content.displayName
+                    ? props.content.displayName
+                    : "",
+                isValid: true
+            },
+            data: {
+                value: props.content.data
+                    ? JSON.stringify(props.content.data, null, ' ')
+                    : "",
+                isValid: true
+            }
         };
 
         this.handleUrlNameChange = this.handleUrlNameChange.bind(this);
         this.handleDisplayNameChange = this.handleDisplayNameChange.bind(this);
         this.handleDataChange = this.handleDataChange.bind(this);
+        this.handleAddItem = this.handleAddItem.bind(this);
+        this.handleClearFormData = this.handleClearFormData.bind(this);
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        let nextState = {
+            company: {
+                value: nextProps.content.company
+                    ? nextProps.content.company
+                    : "",
+                isValid: true
+            },
+            displayName: {
+                value: nextProps.content.displayName
+                    ? nextProps.content.displayName
+                    : "",
+                isValid: true
+            },
+            data: {
+                value: nextProps.content.data
+                    ? JSON.stringify(nextProps.content.data, null, ' ')
+                    : "",
+                isValid: true
+            }
+        };
+        return nextState;
+    }
+
+    handleClearFormData() {
+        this.setState({
+            company: {
+                value: "",
+                isValid: true
+            },
+            displayName: {
+                value: "",
+                isValid: true
+            },
+            data: {
+                value: "",
+                isValid: true
+            }
+        });
     }
 
     handleUrlNameChange(e) {
-        this.setState({company: e.target.value});
+        this.setState({
+            company: {
+                value: e.target.value,
+                isValid: e.target.value.length > 1
+            }
+        });
     }
 
     handleDisplayNameChange(e) {
-        this.setState({displayName: e.target.value});
+        this.setState({
+            displayName: {
+                value: e.target.value,
+                isValid: e.target.value.length > 1
+            }
+        });
     }
 
     handleDataChange(e) {
-        this.setState({data: e.target.value});
-    }
-
-    componentDidMount() {
-        this._isMounted = true;
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
+        this.setState({
+            data: {
+                value: e.target.value,
+                isValid: e.target.value.length > 1
+            }
+        });
     }
 
     handleAddItem(event) {
-        if(this.state.company && this.state.displayName && this.state.data){
-            this.onCompanyAddClick({
-                company: this.state.company,
-                displayName: this.state.displayName,
-                data: JSON.parse(this.state.data)
-            });
+        if (
+            this.state.company.value &&
+            this.state.displayName.value &&
+            this.state.data.value
+        ) {
+            try {
+                let data = JSON.parse(this.state.data.value);
+
+                if (Array.isArray(data)) {
+                    this.onCompanyAddClick({
+                        company: this.state.company.value,
+                        displayName: this.state.displayName.value,
+                        data: data
+                    });
+                } else {
+                    console.log("Data must be an array");
+                }
+            } catch (e) {
+                console.log("Couldn't parse data!", e);
+            }
         }
     }
 
@@ -60,6 +139,8 @@ class CompanyDetails extends Component {
                         <Input
                             name="urlName"
                             id="urlName"
+                            value={this.state.company.value}
+                            invalid={!this.state.company.isValid}
                             placeholder="Name in the URL"
                             onChange={this.handleUrlNameChange}
                         />
@@ -69,6 +150,8 @@ class CompanyDetails extends Component {
                         <Input
                             name="displayName"
                             id="displayName"
+                            value={this.state.displayName.value}
+                            invalid={!this.state.displayName.isValid}
                             placeholder="Display Name"
                             onChange={this.handleDisplayNameChange}
                         />
@@ -78,13 +161,14 @@ class CompanyDetails extends Component {
                         <Input
                             type="textarea"
                             name="data"
+                            value={this.state.data.value}
+                            invalid={!this.state.data.isValid}
                             id="data"
                             onChange={this.handleDataChange}
                         />
                     </FormGroup>
-                    <Button onClick={this.handleAddItem.bind(this)}>
-                        Submit
-                    </Button>
+                    <Button onClick={this.handleAddItem}>Submit</Button>
+                    <Button onClick={this.handleClearFormData}>Reset</Button>
                 </Form>
             </div>
         );

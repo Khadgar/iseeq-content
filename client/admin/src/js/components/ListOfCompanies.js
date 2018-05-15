@@ -6,22 +6,13 @@ import "../../style/list-of-companies.less";
 class ListOfCompanies extends Component {
     constructor(props) {
         super(props);
-        this.content = props.content;
-        this.listOfCompanies = this.content.map(item => {
-            return {
-                company: item.company,
-                displayName: item.displayName
-            };
-        });
+        this.state = {content: props.content};
         this.onCompanyRemoveClick = props.onCompanyRemoveClick;
+        this.onCompanyClick = props.onCompanyClick;
     }
 
-    componentDidMount() {
-        this._isMounted = true;
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
+    static getDerivedStateFromProps(nextProps, prevState) {
+        return {content: nextProps.content};
     }
 
     generateListOfCompanies(content) {
@@ -31,6 +22,7 @@ class ListOfCompanies extends Component {
                     content={el}
                     key={index}
                     onCompanyRemoveClick={this.onCompanyRemoveClick}
+                    onCompanyClick={this.onCompanyClick}
                 />
             );
         });
@@ -40,7 +32,7 @@ class ListOfCompanies extends Component {
         return (
             <div className="ListOfCompanies">
                 <h1>ListOfCompanies</h1>
-                {this.generateListOfCompanies(this.listOfCompanies)}
+                {this.generateListOfCompanies(this.state.content)}
             </div>
         );
     }

@@ -7,31 +7,91 @@ class ApplicationWrapper extends Component {
     constructor() {
         super();
         this.state = {
-            content: undefined
+            content: undefined,
+            contentAvailable: false,
+            selectedCompanyData: {}
         };
+        this.loadData = this.loadData.bind(this);
+        this.postData = this.postData.bind(this);
+        this.handleAddCompany = this.handleAddCompany.bind(this);
+        this.handleRemoveCompany = this.handleRemoveCompany.bind(this);
+        this.handleCompanyClick = this.handleCompanyClick.bind(this);
+        this.getSelectedCompany = this.getSelectedCompany.bind(this);
+    }
+
+    postData(url, data) {
+        this.setState({
+            contentAvailable: false
+        });
+        return fetch(url, {
+            body: JSON.stringify(data), // must match 'Content-Type' header
+            headers: {
+                "content-type": "application/json"
+            },
+            method: "POST"
+        }).then(response => {
+            return response.json();
+        }); // parses response to JSON
     }
 
     componentDidMount() {
         this._isMounted = true;
+        this.loadData();
+    }
+
+    loadData() {
         fetch("http://iseeq-restapi.herokuapp.com/api/iseeq-store/list/all")
             .then(response => response.json())
             .then(json => {
                 if (this._isMounted) {
-                    setTimeout(() => {
-                        this.setState({
-                            content: json
-                        });
-                    }, 500);
+                    this.setState({
+                        content: json,
+                        contentAvailable: true,
+                        selectedCompanyData: this.selectedCompany
+                            ? this.getSelectedCompany(json.result)
+                            : {}
+                    });
                 }
             });
     }
 
+    getSelectedCompany(data){
+        let selectedCompany = data.find(item => {
+            return (
+                item.company ===
+                this.selectedCompany.company
+            );
+        });
+        return selectedCompany?selectedCompany:{};
+    }
+
     handleRemoveCompany(company) {
-        console.log("remove company", company);
+        this.postData(
+            "http://iseeq-restapi.herokuapp.com/api/iseeq-store/remove",
+            company
+        ).then(data => {
+            this.loadData();
+        });
     }
 
     handleAddCompany(companyData) {
-        console.log("adding company", companyData);
+        this.postData(
+            "http://iseeq-restapi.herokuapp.com/api/iseeq-store/add",
+            companyData
+        ).then(data => {
+            this.loadData();
+        });
+    }
+
+    handleCompanyClick(data) {
+        this.selectedCompany = this.state.content.result.find(item => {
+            return item.company === data.company;
+        });
+        this.setState({
+            selectedCompanyData: this.selectedCompany
+                ? this.selectedCompany
+                : {}
+        });
     }
 
     componentWillUnmount() {
@@ -40,13 +100,16 @@ class ApplicationWrapper extends Component {
 
     render() {
         const Content = this.state.content;
+        const selectedCompanyData = this.state.selectedCompanyData;
         return (
             <div className="applicationWrapper container-fluid">
-                {Content ? (
+                {this.state.contentAvailable ? (
                     <Body
                         content={Content}
+                        selectedCompanyData={selectedCompanyData}
                         onCompanyRemoveClick={this.handleRemoveCompany}
                         onCompanyAddClick={this.handleAddCompany}
+                        onCompanyClick={this.handleCompanyClick}
                     />
                 ) : (
                     <LoadingAnimation />

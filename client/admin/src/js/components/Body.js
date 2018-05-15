@@ -7,17 +7,20 @@ import "../../style/body.less";
 class Body extends Component {
     constructor(props) {
         super(props);
-        this.content = props.content.result;
+        this.state = {
+            content: props.content.result,
+            selectedCompanyData: props.selectedCompanyData
+        };
         this.onCompanyRemoveClick = props.onCompanyRemoveClick;
         this.onCompanyAddClick = props.onCompanyAddClick;
+        this.onCompanyClick = props.onCompanyClick;
     }
 
-    componentDidMount() {
-        this._isMounted = true;
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
+    static getDerivedStateFromProps(nextProps, prevState) {
+        return {
+            content: nextProps.content.result,
+            selectedCompanyData: nextProps.selectedCompanyData
+        };
     }
 
     render() {
@@ -25,11 +28,12 @@ class Body extends Component {
             <div className="Body">
                 <h1>Body</h1>
                 <ListOfCompanies
-                    content={this.content}
+                    content={this.state.content}
                     onCompanyRemoveClick={this.onCompanyRemoveClick}
+                    onCompanyClick={this.onCompanyClick}
                 />
                 <CompanyDetails
-                    content={this.content}
+                    content={this.state.selectedCompanyData}
                     onCompanyAddClick={this.onCompanyAddClick}
                 />
             </div>
