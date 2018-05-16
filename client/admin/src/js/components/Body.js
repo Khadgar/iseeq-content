@@ -2,6 +2,8 @@ import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import ListOfCompanies from "./ListOfCompanies.js";
 import CompanyDetails from "./CompanyDetails.js";
+import UrlComponent from "./UrlComponent.js";
+import {Row, Col} from "reactstrap";
 import "../../style/body.less";
 
 class Body extends Component {
@@ -26,16 +28,29 @@ class Body extends Component {
     render() {
         return (
             <div className="Body">
-                <h1>Body</h1>
-                <ListOfCompanies
-                    content={this.state.content}
-                    onCompanyRemoveClick={this.onCompanyRemoveClick}
-                    onCompanyClick={this.onCompanyClick}
-                />
-                <CompanyDetails
-                    content={this.state.selectedCompanyData}
-                    onCompanyAddClick={this.onCompanyAddClick}
-                />
+                <Row>
+                    <Col>
+                        <UrlComponent
+                            selectedCompanyData={this.state.selectedCompanyData}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <ListOfCompanies
+                            content={this.state.content}
+                            selectedCompanyData={this.state.selectedCompanyData}
+                            onCompanyRemoveClick={this.onCompanyRemoveClick}
+                            onCompanyClick={this.onCompanyClick}
+                        />
+                    </Col>
+                    <Col>
+                        <CompanyDetails
+                            content={this.state.selectedCompanyData}
+                            onCompanyAddClick={this.onCompanyAddClick}
+                        />
+                    </Col>
+                </Row>
             </div>
         );
     }

@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import ListOfCompanies from "./ListOfCompanies.js";
-import {Button, Form, FormGroup, Label, Input, FormText} from "reactstrap";
+import {Button, Form, FormGroup, Label, Input, FormText, Row, Col} from "reactstrap";
 
 import "../../style/company-details.less";
 
@@ -132,7 +132,7 @@ class CompanyDetails extends Component {
     render() {
         return (
             <div className="CompanyDetails">
-                <h1>CompanyDetails</h1>
+                <h1 className="CompanyDetails-title display-4">Company Data</h1>
                 <Form>
                     <FormGroup>
                         <Label for="urlName">Name</Label>

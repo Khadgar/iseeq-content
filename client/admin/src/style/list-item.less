@@ -1,3 +1,38 @@
-.ListItem{
-    
+.ListItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    background-color: #FFF;
+    transition: background-color 0.3s;
+    &.selected{
+        background-color: #3297FD;
+    }
+    &:hover{
+        background-color: #B4D5FE;
+        transition: background-color 0.3s;
+    }
+    &:hover > &-remove {
+        opacity: 1;
+        transition: opacity 0.3s;
+    }
+    &-name {
+        font-size: 24px;
+        padding: 8px;
+    }
+    &-remove {
+        background-image: url(./img/icon_close.svg);
+        background-repeat: no-repeat;
+        background-size: 20px auto;
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
 }

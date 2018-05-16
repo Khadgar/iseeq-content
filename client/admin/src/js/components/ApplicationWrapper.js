@@ -102,7 +102,7 @@ class ApplicationWrapper extends Component {
         const Content = this.state.content;
         const selectedCompanyData = this.state.selectedCompanyData;
         return (
-            <div className="applicationWrapper container-fluid">
+            <div className="applicationWrapper container">
                 {this.state.contentAvailable ? (
                     <Body
                         content={Content}

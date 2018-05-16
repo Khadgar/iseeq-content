@@ -5,38 +5,38 @@ import "../../style/list-item.less";
 class ListItem extends Component {
     constructor(props) {
         super(props);
-        this.state = props.content;
+        this.state = {
+            content: props.content,
+            isSelected: props.isSelected
+        };
         this.onCompanyRemoveClick = props.onCompanyRemoveClick;
         this.onCompanyClick = props.onCompanyClick;
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        return nextProps.content;
+        return {
+            content: nextProps.content,
+            isSelected: nextProps.isSelected
+        };
     }
 
     handleRemoveItem() {
-        this.onCompanyRemoveClick({company: this.state.company});
+        this.onCompanyRemoveClick({company: this.state.content.company});
     }
 
     handleClickItem() {
-        this.onCompanyClick(this.state);
+        this.onCompanyClick(this.state.content);
     }
 
     render() {
+        let className = `ListItem${this.state.isSelected?" selected":""}`
         return (
-            <div className="ListItem">
-                <div
-                    className="ListItem-name"
-                    onClick={this.handleClickItem.bind(this)}
-                >
-                    {this.state.displayName}
-                </div>
+            <div className={className} onClick={this.handleClickItem.bind(this)}>
+                <div className="ListItem-name">{this.state.content.displayName}</div>
                 <div
                     className="ListItem-remove"
                     onClick={this.handleRemoveItem.bind(this)}
-                >
-                    x
-                </div>
+                />
             </div>
         );
     }
