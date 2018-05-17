@@ -1,0 +1,289 @@
+import * as d3 from "d3";
+import Fisheye from "./FisheyeV2.js";
+
+class SalaryChart {
+    constructor(data) {
+        this.margin = {
+            top: 20,
+            right: 15,
+            bottom: 60,
+            left: 60
+        };
+        this.width = 960 - this.margin.left - this.margin.right;
+        this.height = 500 - this.margin.top - this.margin.bottom;
+        this.defaultOpacityOfCircles = 0.8;
+        this.circleRadius = 7;
+        this.Fisheye = new Fisheye();
+    }
+
+    transFormCirclesData(data) {
+        // sort by salary from-to average
+        data = data.sort(function(a, b) {
+            return (a["salary-from"] + a["salary-to"]) / 2 - (b["salary-from"] + b["salary-to"]) / 2;
+        });
+        // data transform for from-to dots
+        let circlesData = [];
+        data.forEach((e, i) => {
+            circlesData.push([i, e["salary-from"], e["className"] + " from", e["role"], "from"]);
+            circlesData.push([i, e["salary-to"], e["className"] + " to", e["role"], "to"]);
+        });
+
+        return circlesData;
+    }
+
+    transFormLinksData(data, scaleX, scaleY) {
+        let lineCoordinates = [];
+        data.forEach((e, i) => {
+            lineCoordinates.push({
+                x1: scaleX(i),
+                y1: scaleY(e["salary-from"]),
+                x2: scaleX(i),
+                y2: scaleY(e["salary-to"])
+            });
+        });
+        return lineCoordinates;
+    }
+
+    createGlobalChartElements(data) {
+        this.scaleX = d3
+            .scaleLinear()
+            .domain([-1, data.length])
+            .range([0, this.width]);
+        this.scaleY = d3
+            .scaleLinear()
+            .domain([0, d3.max(data, d => d["salary-to"])])
+            .range([this.height, 0]);
+
+        // root element
+        this.svg = d3
+            .select("#chartContainer")
+            .append("svg:svg")
+            .attr("width", this.width + this.margin.right + this.margin.left)
+            .attr("height", this.height + this.margin.top + this.margin.bottom)
+            .attr("class", "chart");
+        // holds tha chart with x and y axis
+        this.main = this.svg
+            .append("g")
+            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
+            .attr("width", this.width)
+            .attr("height", this.height)
+            .attr("class", "main");
+
+        // define x-axis scaling
+        this.xAxis = d3
+            .axisBottom(this.scaleX)
+            .tickFormat(d => (data[d] ? data[d].role : ""))
+            .ticks(data.length);
+        // x-axis values
+        this.x_axis = this.main
+            .append("g")
+            .attr("transform", "translate(0," + this.height + ")")
+            .attr("class", "xAxis")
+            .call(this.xAxis);
+
+        // draw the y axis
+        this.yAxis = d3
+            .axisLeft(this.scaleY)
+            .tickSizeInner(-this.width)
+            .tickSizeOuter(0)
+            .tickPadding(10);
+
+        this.y_axis = this.main
+            .append("g")
+            .attr("transform", "translate(0,0)")
+            .attr("class", "yAxis")
+            .call(this.yAxis);
+        //Add the text label for the x axis
+        this.main
+            .append("text")
+            .attr("transform", "translate(" + 0 + " ," + (this.height + 26) + ")")
+            .style("text-anchor", "middle")
+            .text("Role");
+
+        // Add the text label for the Y axis
+        this.main
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 20 - this.margin.left)
+            .attr("x", 0 - this.height)
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Salary");
+
+        // hover area
+        this.main
+            .append("rect")
+            .attr("x", 0)
+            .attr("y", this.margin.top)
+            .attr("width", this.width)
+            .attr("height", this.height)
+            .attr("opacity", 0)
+            .attr("class", "hoverrect")
+            .on("click", () => {
+                d3.event.stopPropagation();
+            })
+            .on("mousemove", (d, i, nodes) => {
+                this.fisheye.focus(d3.mouse(nodes[i])[0]);
+                this.redraw();
+            });
+
+        // fisheye setup
+        this.fisheye = this.Fisheye.scale(d3.scaleLinear)
+            .domain([-1, data.length])
+            .range([0, this.width])
+            .distortion(4);
+
+        // fisheye effect
+        this.redraw = () => {
+            this.svg.selectAll(".from").attr("cx", (d, i) => {
+                return this.fisheye(i);
+            });
+            this.svg.selectAll(".to").attr("cx", (d, i) => {
+                return this.fisheye(i);
+            });
+            this.chartArea
+                .selectAll("line")
+                .attr("x1", (e, t) => {
+                    return this.fisheye(t);
+                })
+                .attr("x2", (e, t) => {
+                    return this.fisheye(t);
+                });
+        };
+        // chart Container
+        this.chartArea = this.main.append("g").attr("class", "chartContainer");
+
+        // reset scale on mouseleave
+        this.svg.on("mouseleave", () => {
+            this.svg
+                .selectAll(".from")
+                .transition()
+                .duration(500)
+                .attr("cx", (d, i) => {
+                    return this.scaleX(i);
+                });
+
+            this.svg
+                .selectAll(".to")
+                .transition()
+                .duration(500)
+                .attr("cx", (d, i) => {
+                    return this.scaleX(i);
+                });
+
+            this.chartArea
+                .selectAll("line")
+                .transition()
+                .duration(500)
+                .attr("x1", (e, t) => {
+                    return this.scaleX(t);
+                })
+                .attr("x2", (e, t) => {
+                    return this.scaleX(t);
+                });
+        });
+    }
+
+    updateChartElements(circlesData, lineCoordinates, scaleX, scaleY) {
+        this.chartArea
+            .selectAll("circle")
+            .remove()
+            .transition()
+            .duration(500);
+        let circles = this.chartArea.selectAll("circle").data(circlesData);
+        circles.exit().remove();
+        circles
+            .enter()
+            .append("circle")
+            .style("z-index", "2")
+            .datum((d, i) => {
+                return {
+                    x: scaleX(d[0]),
+                    y: scaleY(d[1]),
+                    className: d[2],
+                    role: d[3],
+                    salary: d[1],
+                    type: d[4],
+                    id: "circle_" + d[0]
+                };
+            })
+            .attr("class", d => d.className + " " + d.id)
+            .attr("r", this.circleRadius)
+            .on("mouseover", (d, i) => {})
+            .on("mouseout", (d, i) => {})
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
+
+        this.chartArea
+            .selectAll("line")
+            .remove()
+            .transition()
+            .duration(500);
+        let links = this.chartArea.selectAll("line").data(lineCoordinates);
+
+        links
+            .enter()
+            .append("line")
+            .style("z-index", "1")
+            .datum((d, i) => {
+                return {
+                    source: {
+                        x: d.x1,
+                        y: d.y1 - this.circleRadius
+                    },
+                    target: {
+                        x: d.x2,
+                        y: d.y2 + this.circleRadius
+                    }
+                };
+            })
+            .attr("class", "link")
+            .style("stroke", "#696969")
+            .attr("x1", (d, i) => d.source.x)
+            .attr("y1", (d, i) => d.source.y)
+            .attr("x2", (d, i) => d.target.x)
+            .attr("y2", (d, i) => d.target.y);
+    }
+
+    updateData(data) {
+        this.scaleX = d3
+            .scaleLinear()
+            .domain([-1, data.length])
+            .range([0, this.width]);
+        this.scaleY = d3
+            .scaleLinear()
+            .domain([0, d3.max(data, d => d["salary-to"])])
+            .range([this.height, 0]);
+
+        // data transform for from-to dots
+        let circlesData = this.transFormCirclesData(data);
+        // data transform for links
+        let lineCoordinates = this.transFormLinksData(data, this.scaleX, this.scaleY);
+
+        // define x-axis scaling
+        this.xAxis = d3
+            .axisBottom(this.scaleX)
+            .tickFormat(d => (data[d] ? data[d].role : ""))
+            .ticks(data.length);
+        // x-axis values
+        this.x_axis.call(this.xAxis);
+
+        // draw the y axis
+        this.yAxis = d3
+            .axisLeft(this.scaleY)
+            .tickSizeInner(-this.width)
+            .tickSizeOuter(0)
+            .tickPadding(10);
+
+        this.y_axis.call(this.yAxis);
+
+        // fisheye setup
+        this.fisheye = this.Fisheye.scale(d3.scaleLinear)
+            .domain([-1, data.length])
+            .range([0, this.width])
+            .distortion(4);
+
+        this.updateChartElements(circlesData, lineCoordinates, this.scaleX, this.scaleY);
+    }
+}
+export default SalaryChart;

@@ -1,6 +1,4 @@
-import React, {
-    Component
-} from "react";
+import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import Body from "./Body.js";
 import LoadingAnimation from "./LoadingAnimation.js";
@@ -17,9 +15,9 @@ class ApplicationWrapper extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        this.loadData(window.location.hash.split('#')[1]);
-        window.addEventListener("hashchange", (e) => {
-            this.loadData(window.location.hash.split('#')[1]);
+        this.loadData(window.location.hash.split("#")[1]);
+        window.addEventListener("hashchange", e => {
+            this.loadData(window.location.hash.split("#")[1]);
         });
     }
 
@@ -27,7 +25,7 @@ class ApplicationWrapper extends Component {
         fetch("http://iseeq-restapi.herokuapp.com/api/iseeq-store/" + (company ? company : "ericsson"))
             .then(response => response.json())
             .then(json => {
-                if(this._isMounted) {
+                if (this._isMounted) {
                     this.setState({
                         content: json,
                         contentAvailable: true
@@ -42,17 +40,7 @@ class ApplicationWrapper extends Component {
 
     render() {
         const Content = this.state.content;
-        return(
-            <div className="applicationWrapper container">
-                {this.state.contentAvailable ? (
-                    <Body
-                        content={Content}
-                    />
-                ) : (
-                    <LoadingAnimation />
-                )}
-            </div>
-        );
+        return <div className="applicationWrapper container">{this.state.contentAvailable ? <Body content={Content} /> : <LoadingAnimation />}</div>;
     }
 }
 export default ApplicationWrapper;

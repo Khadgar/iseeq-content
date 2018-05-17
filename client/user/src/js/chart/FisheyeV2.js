@@ -1,4 +1,21 @@
+import * as d3 from "d3";
 class Fisheye {
+    //https://stackoverflow.com/questions/47844765/d3-rebind-in-d3-v4
+    rebind(target, source) {
+        var i = 1,
+            n = arguments.length,
+            method;
+        while (++i < n) target[(method = arguments[i])] = this.d3_rebind(target, source, source[method]);
+        return target;
+    }
+
+    d3_rebind(target, source, method) {
+        return function() {
+            var value = method.apply(source, arguments);
+            return value === source ? target : value;
+        };
+    }
+
     scale(scaleType) {
         return this.d3_fisheye_scale(scaleType(), 3, 0);
     }
@@ -87,7 +104,7 @@ class Fisheye {
         fisheye.nice = scale.nice;
         fisheye.ticks = scale.ticks;
         fisheye.tickFormat = scale.tickFormat;
-        return d3.rebind(fisheye, scale, "domain", "range");
+        return this.rebind(fisheye, scale, "domain", "range");
     }
 }
 export default Fisheye;
