@@ -1,36 +1,39 @@
-import React, {Component} from "react";
+import React, {
+    Component
+} from "react";
 import ReactDOM from "react-dom";
+import Body from "./Body.js";
+import LoadingAnimation from "./LoadingAnimation.js";
 
 class ApplicationWrapper extends Component {
     constructor() {
         super();
         this.state = {
-            content: undefined
+            content: undefined,
+            contentAvailable: false
         };
+        this.loadData = this.loadData.bind(this);
     }
 
     componentDidMount() {
         this._isMounted = true;
-        // fetch("http://api.chew.pro/trbmb")
-        //     .then(response => response.json())
-        //     .then(json => {
-        //         if (this._isMounted) {
-        //             setTimeout(() => {
-        //                 this.setState({
-        //                     content: Content
-        //                 });
-        //             }, 500);
-        //         }
-        //     });
+        this.loadData(window.location.hash.split('#')[1]);
+        window.addEventListener("hashchange", (e) => {
+            this.loadData(window.location.hash.split('#')[1]);
+        });
+    }
 
-        setTimeout(() => {
-            if (this._isMounted) {
-                this.setState({
-                    content: Content
-                });
-            }
-        }, 500);
-        console.log(location)
+    loadData(company) {
+        fetch("http://iseeq-restapi.herokuapp.com/api/iseeq-store/" + (company ? company : "ericsson"))
+            .then(response => response.json())
+            .then(json => {
+                if(this._isMounted) {
+                    this.setState({
+                        content: json,
+                        contentAvailable: true
+                    });
+                }
+            });
     }
 
     componentWillUnmount() {
@@ -39,8 +42,15 @@ class ApplicationWrapper extends Component {
 
     render() {
         const Content = this.state.content;
-        return (
-            <div className="applicationWrapper container-fluid">
+        return(
+            <div className="applicationWrapper container">
+                {this.state.contentAvailable ? (
+                    <Body
+                        content={Content}
+                    />
+                ) : (
+                    <LoadingAnimation />
+                )}
             </div>
         );
     }
