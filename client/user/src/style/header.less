@@ -1,0 +1,47 @@
+.Header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+    top: 0;
+    z-index: 1001;
+    position: fixed;
+    right: 0;
+    left: 0;
+    &-logoContainer {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        &-title {
+            font-family: "open_sans", Helvetica, Arial, sans-serif;
+            position: relative;
+            bottom: 5px;
+            color: #2c2d2d;
+            padding-left: 10px;
+            font-size: 17px;
+        }
+        &-logo {
+            width: 100px;
+            height: 30px;
+            background-size: 100px;
+            background-repeat: no-repeat;
+            background-image: url(./img/iseeq-logo.png);
+        }
+    }
+    &-menuContainer {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        &-icon {
+            width: 20px;
+            height: 20px;
+            background-size: 20px;
+            background-repeat: no-repeat;
+            background-image: url(./img/help_icon.png);
+            &:hover{
+                cursor: pointer;
+            }
+        }
+    }
+}

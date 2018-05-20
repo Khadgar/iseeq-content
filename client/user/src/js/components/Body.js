@@ -23,8 +23,7 @@ class Body extends Component {
     render() {
         return (
             <div className="Body">
-                <h1 className="display-4">ISEEQ SALARY BENCHMARK</h1>
-                <h1 className="display-4">{this.state.content.company ? this.state.content.displayName : JSON.stringify(this.state.content)}</h1>
+                {/* <h1 className="display-4">{this.state.content.company ? this.state.content.displayName : JSON.stringify(this.state.content)}</h1> */}
                 <ChartComponent data={this.state.content.data ? this.state.content.data : []} />
             </div>
         );

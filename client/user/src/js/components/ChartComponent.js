@@ -48,14 +48,13 @@ class ChartComponent extends Component {
     }
 
     render() {
-        console.log(this.state, this.selectedSeniority);
         return (
             <div className="ChartComponent">
                 <Row>
                     <Col>
-                        <div className="chartArea">
+                        <div className="chartArea"  data-step="1" data-intro="This is the chart with the salaries. Hovering your mouse on the dots will show the values">
                             <div className="chartArea-header">
-                                <Button className="downloadBtn" color="link">
+                                <Button className="downloadBtn" color="link" data-step="4" data-intro="If you like a chart, using this button you can save it as a png">
                                     Download
                                 </Button>
                             </div>
@@ -65,7 +64,7 @@ class ChartComponent extends Component {
                     <Col>
                         <Row>
                             <Col>
-                                <div className="chartControl">
+                                <div className="chartControl" data-step="2" data-intro="Using this dropdown you can filter the chart by seniority level.">
                                     <Label for="displayName">Select seniority level</Label>
                                     <Input value={this.selectedSeniority} ref={el => (this.inputElement = el)} type="select" name="select" id="senioritySelect" onChange={this.handleSeniorityChange}>
                                         <option>Show all</option>
@@ -76,7 +75,7 @@ class ChartComponent extends Component {
                         </Row>
                         <Row>
                             <Col>
-                                <div className="chartValue">
+                                <div className="chartValue" data-step="3" data-intro="Here you can see details about a job role (job role, salary range, seniority level)">
                                     <div className="chartValue-role">
                                         <div className="chartValue-role-colName">Role</div>
                                         <div className="chartValue-role-value" />

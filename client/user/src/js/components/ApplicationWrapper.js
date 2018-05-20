@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import Body from "./Body.js";
+import Header from "./Header.js";
 import LoadingAnimation from "./LoadingAnimation.js";
 
 class ApplicationWrapper extends Component {
@@ -40,7 +41,11 @@ class ApplicationWrapper extends Component {
 
     render() {
         const Content = this.state.content;
-        return <div className="applicationWrapper container">{this.state.contentAvailable ? <Body content={Content} /> : <LoadingAnimation />}</div>;
+        return <div className="applicationWrapper container">
+        {this.state.contentAvailable ? <Header content={Content} /> : <div/>}
+        
+        {this.state.contentAvailable ? <Body content={Content} /> : <LoadingAnimation />}
+        </div>;
     }
 }
 export default ApplicationWrapper;
