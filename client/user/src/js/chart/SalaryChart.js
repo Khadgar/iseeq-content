@@ -1,5 +1,7 @@
 import * as d3 from "d3";
 import Fisheye from "./FisheyeV2.js";
+import {saveAs} from "file-saver";
+import Utils from "./Utils.js";
 
 class SalaryChart {
     constructor(data) {
@@ -9,11 +11,12 @@ class SalaryChart {
             bottom: 60,
             left: 60
         };
-        this.width = 960 - this.margin.left - this.margin.right;
-        this.height = 500 - this.margin.top - this.margin.bottom;
-        this.defaultOpacityOfCircles = 0.8;
-        this.circleRadius = 7;
+        this.width = 800 - this.margin.left - this.margin.right;
+        this.height = 450 - this.margin.top - this.margin.bottom;
+        this.defaultOpacityOfCircles = 0.7;
+        this.circleRadius = 8;
         this.Fisheye = new Fisheye();
+        this.Utils = new Utils();
     }
 
     transFormCirclesData(data) {
@@ -24,8 +27,8 @@ class SalaryChart {
         // data transform for from-to dots
         let circlesData = [];
         data.forEach((e, i) => {
-            circlesData.push([i, e["salary-from"], e["className"] + " from", e["role"], "from"]);
-            circlesData.push([i, e["salary-to"], e["className"] + " to", e["role"], "to"]);
+            circlesData.push([i, e["salary-from"], e["seniority"] + " from", e["role"], "from"]);
+            circlesData.push([i, e["salary-to"], e["seniority"] + " to", e["role"], "to"]);
         });
 
         return circlesData;
@@ -38,10 +41,22 @@ class SalaryChart {
                 x1: scaleX(i),
                 y1: scaleY(e["salary-from"]),
                 x2: scaleX(i),
-                y2: scaleY(e["salary-to"])
+                y2: scaleY(e["salary-to"]),
+                className: e["seniority"]
             });
         });
         return lineCoordinates;
+    }
+
+    filterSeniority(value) {
+        if (value === "Show all") {
+            this.chartArea.selectAll("circle").style("display", "block");
+            this.chartArea.selectAll("line").style("display", "block");
+        } else {
+            this.chartArea.selectAll("circle").style("display", "none");
+            this.chartArea.selectAll("line").style("display", "none");
+            this.chartArea.selectAll(`.${value}`).style("display", "block");
+        }
     }
 
     createGlobalChartElements(data) {
@@ -131,7 +146,7 @@ class SalaryChart {
         this.fisheye = this.Fisheye.scale(d3.scaleLinear)
             .domain([-1, data.length])
             .range([0, this.width])
-            .distortion(4);
+            .distortion(1);
 
         // fisheye effect
         this.redraw = () => {
@@ -182,6 +197,16 @@ class SalaryChart {
                     return this.scaleX(t);
                 });
         });
+
+        // Set-up the export button
+        d3.select(".downloadBtn").on("click", () => {
+            var svgString = this.Utils.getSVGString(this.svg.node());
+            this.Utils.svgString2Image(svgString, 2 * this.width, 2 * this.height, "png", save); // passes Blob and filesize String to the callback
+
+            function save(dataBlob, filesize) {
+                saveAs(dataBlob, "iseeq_salary_benchmark.png");
+            }
+        });
     }
 
     updateChartElements(circlesData, lineCoordinates, scaleX, scaleY) {
@@ -200,17 +225,45 @@ class SalaryChart {
                 return {
                     x: scaleX(d[0]),
                     y: scaleY(d[1]),
-                    className: d[2],
+                    seniority: d[2],
                     role: d[3],
                     salary: d[1],
                     type: d[4],
                     id: "circle_" + d[0]
                 };
             })
-            .attr("class", d => d.className + " " + d.id)
+            .attr("class", d => d.seniority + " " + d.id)
             .attr("r", this.circleRadius)
-            .on("mouseover", (d, i) => {})
-            .on("mouseout", (d, i) => {})
+            .on("mouseover", (d, i, nodes) => {
+                d3.select(nodes[i]).style("cursor", "pointer");
+                d3.select(".chartValue-role-value").text(d.role);
+                d3.selectAll(".from").style("opacity", this.defaultOpacityOfCircles);
+                d3.selectAll(".to").style("opacity", this.defaultOpacityOfCircles);
+                let circles = d3
+                    .selectAll("." + d.id)
+                    .classed("active", true)
+                    .style("opacity", 1);
+                let salaryRange = [];
+                circles.each(function(circle) {
+                    salaryRange.push(circle.salary.toFixed(1));
+                });
+                d3.select(".chartValue-salary-value").text(
+                    salaryRange
+                        .sort()
+                        .map(salary => `${salary} HUF`)
+                        .join(" - ")
+                );
+                d3.select(".chartValue-seniority-value").text(d.seniority.split(" ")[0]);
+            })
+            .on("mouseout", (d, i, nodes) => {
+                // d3.select(".chartValue-salary-value").text('');
+                // d3.select(".chartValue-role-value").text('');
+                // d3.select(".chartValue-seniority-value").text('');
+                d3.select(nodes[i]).style("cursor", "default");
+                d3.selectAll(".from").style("opacity", this.defaultOpacityOfCircles);
+                d3.selectAll(".to").style("opacity", this.defaultOpacityOfCircles);
+                d3.selectAll("." + d.id).classed("active", false);
+            })
             .attr("cx", d => d.x)
             .attr("cy", d => d.y);
 
@@ -234,10 +287,11 @@ class SalaryChart {
                     target: {
                         x: d.x2,
                         y: d.y2 + this.circleRadius
-                    }
+                    },
+                    className: d.className
                 };
             })
-            .attr("class", "link")
+            .attr("class", d => `link ${d.className}`)
             .style("stroke", "#696969")
             .attr("x1", (d, i) => d.source.x)
             .attr("y1", (d, i) => d.source.y)
@@ -281,7 +335,7 @@ class SalaryChart {
         this.fisheye = this.Fisheye.scale(d3.scaleLinear)
             .domain([-1, data.length])
             .range([0, this.width])
-            .distortion(4);
+            .distortion(1);
 
         this.updateChartElements(circlesData, lineCoordinates, this.scaleX, this.scaleY);
     }

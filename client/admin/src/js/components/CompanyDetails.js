@@ -11,21 +11,15 @@ class CompanyDetails extends Component {
         this.onCompanyAddClick = props.onCompanyAddClick;
         this.state = {
             company: {
-                value: props.content.company
-                    ? props.content.company
-                    : "",
+                value: props.content.company ? props.content.company : "",
                 isValid: true
             },
             displayName: {
-                value: props.content.displayName
-                    ? props.content.displayName
-                    : "",
+                value: props.content.displayName ? props.content.displayName : "",
                 isValid: true
             },
             data: {
-                value: props.content.data
-                    ? JSON.stringify(props.content.data, null, ' ')
-                    : "",
+                value: props.content.data ? JSON.stringify(props.content.data, null, " ") : "",
                 isValid: true
             }
         };
@@ -40,21 +34,15 @@ class CompanyDetails extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         let nextState = {
             company: {
-                value: nextProps.content.company
-                    ? nextProps.content.company
-                    : "",
+                value: nextProps.content.company ? nextProps.content.company : "",
                 isValid: true
             },
             displayName: {
-                value: nextProps.content.displayName
-                    ? nextProps.content.displayName
-                    : "",
+                value: nextProps.content.displayName ? nextProps.content.displayName : "",
                 isValid: true
             },
             data: {
-                value: nextProps.content.data
-                    ? JSON.stringify(nextProps.content.data, null, ' ')
-                    : "",
+                value: nextProps.content.data ? JSON.stringify(nextProps.content.data, null, " ") : "",
                 isValid: true
             }
         };
@@ -106,11 +94,7 @@ class CompanyDetails extends Component {
     }
 
     handleAddItem(event) {
-        if (
-            this.state.company.value &&
-            this.state.displayName.value &&
-            this.state.data.value
-        ) {
+        if (this.state.company.value && this.state.displayName.value && this.state.data.value) {
             try {
                 let data = JSON.parse(this.state.data.value);
 
@@ -136,14 +120,7 @@ class CompanyDetails extends Component {
                 <Form>
                     <FormGroup>
                         <Label for="urlName">Name</Label>
-                        <Input
-                            name="urlName"
-                            id="urlName"
-                            value={this.state.company.value}
-                            invalid={!this.state.company.isValid}
-                            placeholder="Name in the URL"
-                            onChange={this.handleUrlNameChange}
-                        />
+                        <Input name="urlName" id="urlName" value={this.state.company.value} invalid={!this.state.company.isValid} placeholder="Name in the URL" onChange={this.handleUrlNameChange} />
                     </FormGroup>
                     <FormGroup>
                         <Label for="displayName">Display Name</Label>
@@ -158,17 +135,12 @@ class CompanyDetails extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label for="data">Chart Data in JSON</Label>
-                        <Input
-                            type="textarea"
-                            name="data"
-                            value={this.state.data.value}
-                            invalid={!this.state.data.isValid}
-                            id="data"
-                            onChange={this.handleDataChange}
-                        />
+                        <Input type="textarea" name="data" value={this.state.data.value} invalid={!this.state.data.isValid} id="data" onChange={this.handleDataChange} />
                     </FormGroup>
-                    <Button onClick={this.handleAddItem}>Submit</Button>
-                    <Button onClick={this.handleClearFormData}>Reset</Button>
+                    <div className="CompanyDetails-buttonContainer">
+                        <Button color="success" onClick={this.handleAddItem}>Submit</Button>
+                        <Button color="warning" onClick={this.handleClearFormData}>Reset</Button>
+                    </div>
                 </Form>
             </div>
         );

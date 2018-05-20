@@ -17186,7 +17186,7 @@ var _ApplicationWrapper = __webpack_require__(205);
 
 var _ApplicationWrapper2 = _interopRequireDefault(_ApplicationWrapper);
 
-__webpack_require__(561);
+__webpack_require__(565);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35795,7 +35795,7 @@ var _Body = __webpack_require__(206);
 
 var _Body2 = _interopRequireDefault(_Body);
 
-var _LoadingAnimation = __webpack_require__(558);
+var _LoadingAnimation = __webpack_require__(562);
 
 var _LoadingAnimation2 = _interopRequireDefault(_LoadingAnimation);
 
@@ -35899,7 +35899,7 @@ var _ChartComponent = __webpack_require__(219);
 
 var _ChartComponent2 = _interopRequireDefault(_ChartComponent);
 
-__webpack_require__(556);
+__webpack_require__(560);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35931,7 +35931,12 @@ var Body = function (_Component) {
                 { className: "Body" },
                 _react2.default.createElement(
                     "h1",
-                    null,
+                    { className: "display-4" },
+                    "ISEEQ SALARY BENCHMARK"
+                ),
+                _react2.default.createElement(
+                    "h1",
+                    { className: "display-4" },
                     this.state.content.company ? this.state.content.displayName : JSON.stringify(this.state.content)
                 ),
                 _react2.default.createElement(_ChartComponent2.default, { data: this.state.content.data ? this.state.content.data : [] })
@@ -40072,6 +40077,8 @@ var _SalaryChart2 = _interopRequireDefault(_SalaryChart);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -40089,36 +40096,161 @@ var ChartComponent = function (_Component) {
         _this.state = {
             data: props.data
         };
+        _this.selectedSeniority = "Show all";
         _this.salaryChart = new _SalaryChart2.default();
+        _this.handleSeniorityChange = _this.handleSeniorityChange.bind(_this);
         return _this;
     }
 
     _createClass(ChartComponent, [{
+        key: "handleSeniorityChange",
+        value: function handleSeniorityChange(e) {
+            this.selectedSeniority = e.target.value;
+            this.salaryChart.filterSeniority(e.target.value);
+            this.forceUpdate();
+        }
+    }, {
         key: "componentDidMount",
         value: function componentDidMount() {
             this.salaryChart.createGlobalChartElements(this.state.data);
             this.salaryChart.updateData(this.state.data);
+            this.salaryChart.filterSeniority(this.selectedSeniority);
         }
     }, {
         key: "shouldComponentUpdate",
         value: function shouldComponentUpdate(nextProps) {
             this.salaryChart.updateData(nextProps.data);
+            this.salaryChart.filterSeniority(this.selectedSeniority);
             return false;
+        }
+    }, {
+        key: "generateSeniorityFilterItems",
+        value: function generateSeniorityFilterItems(data) {
+            var seniorities = data.map(function (el, index) {
+                return el.seniority;
+            });
+
+            return [].concat(_toConsumableArray(new Set(seniorities))).map(function (el, index) {
+                return _react2.default.createElement(
+                    "option",
+                    { key: index },
+                    el
+                );
+            });
         }
     }, {
         key: "render",
         value: function render() {
+            var _this2 = this;
+
+            console.log(this.state, this.selectedSeniority);
             return _react2.default.createElement(
                 "div",
                 { className: "ChartComponent" },
-                _react2.default.createElement("div", { id: "chartContainer" })
+                _react2.default.createElement(
+                    _reactstrap.Row,
+                    null,
+                    _react2.default.createElement(
+                        _reactstrap.Col,
+                        null,
+                        _react2.default.createElement(
+                            "div",
+                            { className: "chartArea" },
+                            _react2.default.createElement(
+                                "div",
+                                { className: "chartArea-header" },
+                                _react2.default.createElement(
+                                    _reactstrap.Button,
+                                    { className: "downloadBtn", color: "link" },
+                                    "Download"
+                                )
+                            ),
+                            _react2.default.createElement("div", { id: "chartContainer" })
+                        )
+                    ),
+                    _react2.default.createElement(
+                        _reactstrap.Col,
+                        null,
+                        _react2.default.createElement(
+                            _reactstrap.Row,
+                            null,
+                            _react2.default.createElement(
+                                _reactstrap.Col,
+                                null,
+                                _react2.default.createElement(
+                                    "div",
+                                    { className: "chartControl" },
+                                    _react2.default.createElement(
+                                        _reactstrap.Label,
+                                        { "for": "displayName" },
+                                        "Select seniority level"
+                                    ),
+                                    _react2.default.createElement(
+                                        _reactstrap.Input,
+                                        { value: this.selectedSeniority, ref: function ref(el) {
+                                                return _this2.inputElement = el;
+                                            }, type: "select", name: "select", id: "senioritySelect", onChange: this.handleSeniorityChange },
+                                        _react2.default.createElement(
+                                            "option",
+                                            null,
+                                            "Show all"
+                                        ),
+                                        this.generateSeniorityFilterItems(this.state.data)
+                                    )
+                                )
+                            )
+                        ),
+                        _react2.default.createElement(
+                            _reactstrap.Row,
+                            null,
+                            _react2.default.createElement(
+                                _reactstrap.Col,
+                                null,
+                                _react2.default.createElement(
+                                    "div",
+                                    { className: "chartValue" },
+                                    _react2.default.createElement(
+                                        "div",
+                                        { className: "chartValue-role" },
+                                        _react2.default.createElement(
+                                            "div",
+                                            { className: "chartValue-role-colName" },
+                                            "Role"
+                                        ),
+                                        _react2.default.createElement("div", { className: "chartValue-role-value" })
+                                    ),
+                                    _react2.default.createElement(
+                                        "div",
+                                        { className: "chartValue-seniority" },
+                                        _react2.default.createElement(
+                                            "div",
+                                            { className: "chartValue-seniority-colName" },
+                                            "Seniority LvL"
+                                        ),
+                                        _react2.default.createElement("div", { className: "chartValue-seniority-value" })
+                                    ),
+                                    _react2.default.createElement(
+                                        "div",
+                                        { className: "chartValue-salary" },
+                                        _react2.default.createElement(
+                                            "div",
+                                            { className: "chartValue-salary-colName" },
+                                            "Salary range"
+                                        ),
+                                        _react2.default.createElement("div", { className: "chartValue-salary-value" })
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
             );
         }
     }], [{
         key: "getDerivedStateFromProps",
         value: function getDerivedStateFromProps(nextProps, prevState) {
             return {
-                content: nextProps.data
+                data: nextProps.data
             };
         }
     }]);
@@ -40187,7 +40319,7 @@ exports = module.exports = __webpack_require__(42)(false);
 
 
 // module
-exports.push([module.i, ".main text {\n  font: 12px sans-serif;\n}\nline,\npath,\nyAxis {\n  shape-rendering: crispEdges;\n  stroke: #696969;\n  fill: none;\n}\n.xAxis {\n  display: none;\n}\n.from {\n  fill: #85bb65;\n  opacity: 0.8;\n}\n.to {\n  fill: #3E741E;\n  opacity: 0.8;\n}\n.currentValue {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  height: 50px;\n}\n.currentValue-value {\n  padding-top: 10px;\n  display: flex;\n  flex-direction: row;\n}\n.valueName {\n  padding-right: 4px;\n}\n.tick line {\n  opacity: 0.2;\n}\n.link {\n  opacity: 0.8;\n}\n.updateChartData {\n  padding-top: 10px;\n  padding-bottom: 10px;\n}\n", ""]);
+exports.push([module.i, ".main text {\n  font: 12px sans-serif;\n}\nline,\npath,\n.yAxis {\n  shape-rendering: crispEdges;\n  stroke: #696969;\n  fill: none;\n}\n.xAxis {\n  display: none;\n}\ncircle.extra {\n  stroke: #ff8000;\n  stroke-width: 3px;\n}\ncircle.junior {\n  stroke: #c70039;\n  stroke-width: 3px;\n}\ncircle.senior {\n  stroke: #a335ee;\n  stroke-width: 3px;\n}\ncircle.regular {\n  stroke: #0070dd;\n  stroke-width: 3px;\n}\n.from {\n  fill: #dcdcdc;\n}\n.to {\n  fill: #dcdcdc;\n}\n.currentValue {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  height: 50px;\n}\n.currentValue-value {\n  padding-top: 10px;\n  display: flex;\n  flex-direction: row;\n}\n.valueName {\n  padding-right: 4px;\n}\n.tick line {\n  opacity: 0.2;\n}\n.link {\n  opacity: 0.8;\n}\n.updateChartData {\n  padding-top: 10px;\n  padding-bottom: 10px;\n}\n.chartArea {\n  display: flex;\n  flex-direction: column;\n  margin-bottom: 20px;\n}\n.chartArea-header {\n  align-self: flex-end;\n}\n.chartValue {\n  display: flex;\n  flex-direction: column;\n  margin-top: 20px;\n  padding: 4px;\n  border: 1px solid #ced4da;\n  border-radius: 3px;\n}\n.chartValue-salary {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  align-self: center;\n}\n.chartValue-salary-value {\n  height: 24px;\n}\n.chartValue-salary-colName {\n  align-self: center;\n}\n.chartValue-role {\n  display: flex;\n  justify-content: space-between;\n}\n.chartValue-seniority {\n  display: flex;\n  justify-content: space-between;\n  text-transform: capitalize;\n}\n", ""]);
 
 // exports
 
@@ -40308,6 +40440,12 @@ var _FisheyeV = __webpack_require__(555);
 
 var _FisheyeV2 = _interopRequireDefault(_FisheyeV);
 
+var _fileSaver = __webpack_require__(556);
+
+var _Utils = __webpack_require__(559);
+
+var _Utils2 = _interopRequireDefault(_Utils);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -40324,11 +40462,12 @@ var SalaryChart = function () {
             bottom: 60,
             left: 60
         };
-        this.width = 960 - this.margin.left - this.margin.right;
-        this.height = 500 - this.margin.top - this.margin.bottom;
-        this.defaultOpacityOfCircles = 0.8;
-        this.circleRadius = 7;
+        this.width = 800 - this.margin.left - this.margin.right;
+        this.height = 450 - this.margin.top - this.margin.bottom;
+        this.defaultOpacityOfCircles = 0.7;
+        this.circleRadius = 8;
         this.Fisheye = new _FisheyeV2.default();
+        this.Utils = new _Utils2.default();
     }
 
     _createClass(SalaryChart, [{
@@ -40341,8 +40480,8 @@ var SalaryChart = function () {
             // data transform for from-to dots
             var circlesData = [];
             data.forEach(function (e, i) {
-                circlesData.push([i, e["salary-from"], e["className"] + " from", e["role"], "from"]);
-                circlesData.push([i, e["salary-to"], e["className"] + " to", e["role"], "to"]);
+                circlesData.push([i, e["salary-from"], e["seniority"] + " from", e["role"], "from"]);
+                circlesData.push([i, e["salary-to"], e["seniority"] + " to", e["role"], "to"]);
             });
 
             return circlesData;
@@ -40356,10 +40495,23 @@ var SalaryChart = function () {
                     x1: scaleX(i),
                     y1: scaleY(e["salary-from"]),
                     x2: scaleX(i),
-                    y2: scaleY(e["salary-to"])
+                    y2: scaleY(e["salary-to"]),
+                    className: e["seniority"]
                 });
             });
             return lineCoordinates;
+        }
+    }, {
+        key: "filterSeniority",
+        value: function filterSeniority(value) {
+            if (value === "Show all") {
+                this.chartArea.selectAll("circle").style("display", "block");
+                this.chartArea.selectAll("line").style("display", "block");
+            } else {
+                this.chartArea.selectAll("circle").style("display", "none");
+                this.chartArea.selectAll("line").style("display", "none");
+                this.chartArea.selectAll("." + value).style("display", "block");
+            }
         }
     }, {
         key: "createGlobalChartElements",
@@ -40402,7 +40554,7 @@ var SalaryChart = function () {
             });
 
             // fisheye setup
-            this.fisheye = this.Fisheye.scale(d3.scaleLinear).domain([-1, data.length]).range([0, this.width]).distortion(4);
+            this.fisheye = this.Fisheye.scale(d3.scaleLinear).domain([-1, data.length]).range([0, this.width]).distortion(1);
 
             // fisheye effect
             this.redraw = function () {
@@ -40437,6 +40589,16 @@ var SalaryChart = function () {
                     return _this.scaleX(t);
                 });
             });
+
+            // Set-up the export button
+            d3.select(".downloadBtn").on("click", function () {
+                var svgString = _this.Utils.getSVGString(_this.svg.node());
+                _this.Utils.svgString2Image(svgString, 2 * _this.width, 2 * _this.height, "png", save); // passes Blob and filesize String to the callback
+
+                function save(dataBlob, filesize) {
+                    (0, _fileSaver.saveAs)(dataBlob, "iseeq_salary_benchmark.png");
+                }
+            });
         }
     }, {
         key: "updateChartElements",
@@ -40445,20 +40607,42 @@ var SalaryChart = function () {
 
             this.chartArea.selectAll("circle").remove().transition().duration(500);
             var circles = this.chartArea.selectAll("circle").data(circlesData);
-
+            circles.exit().remove();
             circles.enter().append("circle").style("z-index", "2").datum(function (d, i) {
                 return {
                     x: scaleX(d[0]),
                     y: scaleY(d[1]),
-                    className: d[2],
+                    seniority: d[2],
                     role: d[3],
                     salary: d[1],
                     type: d[4],
                     id: "circle_" + d[0]
                 };
             }).attr("class", function (d) {
-                return d.className + " " + d.id;
-            }).attr("r", this.circleRadius).on("mouseover", function (d, i) {}).on("mouseout", function (d, i) {}).attr("cx", function (d) {
+                return d.seniority + " " + d.id;
+            }).attr("r", this.circleRadius).on("mouseover", function (d, i, nodes) {
+                d3.select(nodes[i]).style("cursor", "pointer");
+                d3.select(".chartValue-role-value").text(d.role);
+                d3.selectAll(".from").style("opacity", _this2.defaultOpacityOfCircles);
+                d3.selectAll(".to").style("opacity", _this2.defaultOpacityOfCircles);
+                var circles = d3.selectAll("." + d.id).classed("active", true).style("opacity", 1);
+                var salaryRange = [];
+                circles.each(function (circle) {
+                    salaryRange.push(circle.salary.toFixed(1));
+                });
+                d3.select(".chartValue-salary-value").text(salaryRange.sort().map(function (salary) {
+                    return salary + " HUF";
+                }).join(" - "));
+                d3.select(".chartValue-seniority-value").text(d.seniority.split(" ")[0]);
+            }).on("mouseout", function (d, i, nodes) {
+                // d3.select(".chartValue-salary-value").text('');
+                // d3.select(".chartValue-role-value").text('');
+                // d3.select(".chartValue-seniority-value").text('');
+                d3.select(nodes[i]).style("cursor", "default");
+                d3.selectAll(".from").style("opacity", _this2.defaultOpacityOfCircles);
+                d3.selectAll(".to").style("opacity", _this2.defaultOpacityOfCircles);
+                d3.selectAll("." + d.id).classed("active", false);
+            }).attr("cx", function (d) {
                 return d.x;
             }).attr("cy", function (d) {
                 return d.y;
@@ -40476,9 +40660,12 @@ var SalaryChart = function () {
                     target: {
                         x: d.x2,
                         y: d.y2 + _this2.circleRadius
-                    }
+                    },
+                    className: d.className
                 };
-            }).attr("class", "link").style("stroke", "#696969").attr("x1", function (d, i) {
+            }).attr("class", function (d) {
+                return "link " + d.className;
+            }).style("stroke", "#696969").attr("x1", function (d, i) {
                 return d.source.x;
             }).attr("y1", function (d, i) {
                 return d.source.y;
@@ -40514,7 +40701,7 @@ var SalaryChart = function () {
             this.y_axis.call(this.yAxis);
 
             // fisheye setup
-            this.fisheye = this.Fisheye.scale(d3.scaleLinear).domain([-1, data.length]).range([0, this.width]).distortion(4);
+            this.fisheye = this.Fisheye.scale(d3.scaleLinear).domain([-1, data.length]).range([0, this.width]).distortion(1);
 
             this.updateChartElements(circlesData, lineCoordinates, this.scaleX, this.scaleY);
         }
@@ -54861,8 +55048,298 @@ exports.default = Fisheye;
 /* 556 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var __WEBPACK_AMD_DEFINE_RESULT__;/* FileSaver.js
+ * A saveAs() FileSaver implementation.
+ * 1.3.2
+ * 2016-06-16 18:25:19
+ *
+ * By Eli Grey, http://eligrey.com
+ * License: MIT
+ *   See https://github.com/eligrey/FileSaver.js/blob/master/LICENSE.md
+ */
 
-var content = __webpack_require__(557);
+/*global self */
+/*jslint bitwise: true, indent: 4, laxbreak: true, laxcomma: true, smarttabs: true, plusplus: true */
+
+/*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
+
+var saveAs = saveAs || (function(view) {
+	"use strict";
+	// IE <10 is explicitly unsupported
+	if (typeof view === "undefined" || typeof navigator !== "undefined" && /MSIE [1-9]\./.test(navigator.userAgent)) {
+		return;
+	}
+	var
+		  doc = view.document
+		  // only get URL when necessary in case Blob.js hasn't overridden it yet
+		, get_URL = function() {
+			return view.URL || view.webkitURL || view;
+		}
+		, save_link = doc.createElementNS("http://www.w3.org/1999/xhtml", "a")
+		, can_use_save_link = "download" in save_link
+		, click = function(node) {
+			var event = new MouseEvent("click");
+			node.dispatchEvent(event);
+		}
+		, is_safari = /constructor/i.test(view.HTMLElement) || view.safari
+		, is_chrome_ios =/CriOS\/[\d]+/.test(navigator.userAgent)
+		, throw_outside = function(ex) {
+			(view.setImmediate || view.setTimeout)(function() {
+				throw ex;
+			}, 0);
+		}
+		, force_saveable_type = "application/octet-stream"
+		// the Blob API is fundamentally broken as there is no "downloadfinished" event to subscribe to
+		, arbitrary_revoke_timeout = 1000 * 40 // in ms
+		, revoke = function(file) {
+			var revoker = function() {
+				if (typeof file === "string") { // file is an object URL
+					get_URL().revokeObjectURL(file);
+				} else { // file is a File
+					file.remove();
+				}
+			};
+			setTimeout(revoker, arbitrary_revoke_timeout);
+		}
+		, dispatch = function(filesaver, event_types, event) {
+			event_types = [].concat(event_types);
+			var i = event_types.length;
+			while (i--) {
+				var listener = filesaver["on" + event_types[i]];
+				if (typeof listener === "function") {
+					try {
+						listener.call(filesaver, event || filesaver);
+					} catch (ex) {
+						throw_outside(ex);
+					}
+				}
+			}
+		}
+		, auto_bom = function(blob) {
+			// prepend BOM for UTF-8 XML and text/* types (including HTML)
+			// note: your browser will automatically convert UTF-16 U+FEFF to EF BB BF
+			if (/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(blob.type)) {
+				return new Blob([String.fromCharCode(0xFEFF), blob], {type: blob.type});
+			}
+			return blob;
+		}
+		, FileSaver = function(blob, name, no_auto_bom) {
+			if (!no_auto_bom) {
+				blob = auto_bom(blob);
+			}
+			// First try a.download, then web filesystem, then object URLs
+			var
+				  filesaver = this
+				, type = blob.type
+				, force = type === force_saveable_type
+				, object_url
+				, dispatch_all = function() {
+					dispatch(filesaver, "writestart progress write writeend".split(" "));
+				}
+				// on any filesys errors revert to saving with object URLs
+				, fs_error = function() {
+					if ((is_chrome_ios || (force && is_safari)) && view.FileReader) {
+						// Safari doesn't allow downloading of blob urls
+						var reader = new FileReader();
+						reader.onloadend = function() {
+							var url = is_chrome_ios ? reader.result : reader.result.replace(/^data:[^;]*;/, 'data:attachment/file;');
+							var popup = view.open(url, '_blank');
+							if(!popup) view.location.href = url;
+							url=undefined; // release reference before dispatching
+							filesaver.readyState = filesaver.DONE;
+							dispatch_all();
+						};
+						reader.readAsDataURL(blob);
+						filesaver.readyState = filesaver.INIT;
+						return;
+					}
+					// don't create more object URLs than needed
+					if (!object_url) {
+						object_url = get_URL().createObjectURL(blob);
+					}
+					if (force) {
+						view.location.href = object_url;
+					} else {
+						var opened = view.open(object_url, "_blank");
+						if (!opened) {
+							// Apple does not allow window.open, see https://developer.apple.com/library/safari/documentation/Tools/Conceptual/SafariExtensionGuide/WorkingwithWindowsandTabs/WorkingwithWindowsandTabs.html
+							view.location.href = object_url;
+						}
+					}
+					filesaver.readyState = filesaver.DONE;
+					dispatch_all();
+					revoke(object_url);
+				}
+			;
+			filesaver.readyState = filesaver.INIT;
+
+			if (can_use_save_link) {
+				object_url = get_URL().createObjectURL(blob);
+				setTimeout(function() {
+					save_link.href = object_url;
+					save_link.download = name;
+					click(save_link);
+					dispatch_all();
+					revoke(object_url);
+					filesaver.readyState = filesaver.DONE;
+				});
+				return;
+			}
+
+			fs_error();
+		}
+		, FS_proto = FileSaver.prototype
+		, saveAs = function(blob, name, no_auto_bom) {
+			return new FileSaver(blob, name || blob.name || "download", no_auto_bom);
+		}
+	;
+	// IE 10+ (native saveAs)
+	if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
+		return function(blob, name, no_auto_bom) {
+			name = name || blob.name || "download";
+
+			if (!no_auto_bom) {
+				blob = auto_bom(blob);
+			}
+			return navigator.msSaveOrOpenBlob(blob, name);
+		};
+	}
+
+	FS_proto.abort = function(){};
+	FS_proto.readyState = FS_proto.INIT = 0;
+	FS_proto.WRITING = 1;
+	FS_proto.DONE = 2;
+
+	FS_proto.error =
+	FS_proto.onwritestart =
+	FS_proto.onprogress =
+	FS_proto.onwrite =
+	FS_proto.onabort =
+	FS_proto.onerror =
+	FS_proto.onwriteend =
+		null;
+
+	return saveAs;
+}(
+	   typeof self !== "undefined" && self
+	|| typeof window !== "undefined" && window
+	|| this.content
+));
+// `self` is undefined in Firefox for Android content script context
+// while `this` is nsIContentFrameMessageManager
+// with an attribute `content` that corresponds to the window
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports.saveAs = saveAs;
+} else if (("function" !== "undefined" && __webpack_require__(557) !== null) && (__webpack_require__(558) !== null)) {
+  !(__WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+    return saveAs;
+  }).call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+}
+
+
+/***/ }),
+/* 557 */
+/***/ (function(module, exports) {
+
+module.exports = function() {
+	throw new Error("define cannot be used indirect");
+};
+
+
+/***/ }),
+/* 558 */
+/***/ (function(module, exports) {
+
+/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
+module.exports = __webpack_amd_options__;
+
+/* WEBPACK VAR INJECTION */}.call(exports, {}))
+
+/***/ }),
+/* 559 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Utils = function () {
+    function Utils() {
+        _classCallCheck(this, Utils);
+
+        // Content of chart-component.less
+        this.style = '.main text {  font: 12px sans-serif;}line,path,.yAxis {  shape-rendering: crispEdges;  stroke: #696969;  fill: none;}.xAxis {  display: none;}circle.extra {  stroke: #ff8000;  stroke-width: 3px;}circle.junior {  stroke: #c70039;  stroke-width: 3px;}circle.senior {  stroke: #a335ee;  stroke-width: 3px;}circle.regular {  stroke: #0070dd;  stroke-width: 3px;}.from {  fill: #dcdcdc;}.to {  fill: #dcdcdc;}.currentValue {  display: flex;  flex-direction: row;  justify-content: space-around;  height: 50px;}.currentValue-value {  padding-top: 10px;  display: flex;  flex-direction: row;}.valueName {  padding-right: 4px;}.tick line {  opacity: 0.2;}.link {  opacity: 0.8;}';
+    }
+
+    _createClass(Utils, [{
+        key: "getSVGString",
+        value: function getSVGString(svgNode) {
+            svgNode.setAttribute("xlink", "http://www.w3.org/1999/xlink");
+            appendCSS(this.style, svgNode);
+
+            var serializer = new XMLSerializer();
+            var svgString = serializer.serializeToString(svgNode);
+            svgString = svgString.replace(/(\w+)?:?xlink=/g, "xmlns:xlink="); // Fix root xlink without namespace
+            svgString = svgString.replace(/NS\d+:href/g, "xlink:href"); // Safari NS namespace fix
+
+            return svgString;
+
+            function appendCSS(cssText, element) {
+                var styleElement = document.createElement("style");
+                styleElement.setAttribute("type", "text/css");
+                styleElement.innerHTML = cssText;
+                var refNode = element.hasChildNodes() ? element.children[0] : null;
+                element.insertBefore(styleElement, refNode);
+            }
+        }
+    }, {
+        key: "svgString2Image",
+        value: function svgString2Image(svgString, width, height, format, callback) {
+            var format = format ? format : "png";
+
+            var imgsrc = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgString))); // Convert SVG string to data URL
+
+            var canvas = document.createElement("canvas");
+            var context = canvas.getContext("2d");
+
+            canvas.width = width;
+            canvas.height = height;
+
+            var image = new Image();
+            image.onload = function () {
+                context.clearRect(0, 0, width, height);
+                context.drawImage(image, 0, 0, width, height);
+
+                canvas.toBlob(function (blob) {
+                    var filesize = Math.round(blob.length / 1024) + " KB";
+                    if (callback) callback(blob, filesize);
+                });
+            };
+
+            image.src = imgsrc;
+        }
+    }]);
+
+    return Utils;
+}();
+
+exports.default = Utils;
+
+/***/ }),
+/* 560 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(561);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -54908,7 +55385,7 @@ if(false) {
 }
 
 /***/ }),
-/* 557 */
+/* 561 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(42)(false);
@@ -54922,7 +55399,7 @@ exports.push([module.i, "", ""]);
 
 
 /***/ }),
-/* 558 */
+/* 562 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54942,7 +55419,7 @@ var _reactDom = __webpack_require__(22);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-__webpack_require__(559);
+__webpack_require__(563);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -54981,11 +55458,11 @@ var LoadingAnimation = function (_Component) {
 exports.default = LoadingAnimation;
 
 /***/ }),
-/* 559 */
+/* 563 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(560);
+var content = __webpack_require__(564);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -55031,7 +55508,7 @@ if(false) {
 }
 
 /***/ }),
-/* 560 */
+/* 564 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(42)(false);
@@ -55045,11 +55522,11 @@ exports.push([module.i, ".loading {\n  position: absolute;\n  display: flex;\n  
 
 
 /***/ }),
-/* 561 */
+/* 565 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(562);
+var content = __webpack_require__(566);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -55095,7 +55572,7 @@ if(false) {
 }
 
 /***/ }),
-/* 562 */
+/* 566 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(42)(false);

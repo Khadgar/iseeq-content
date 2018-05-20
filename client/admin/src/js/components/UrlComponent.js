@@ -13,7 +13,7 @@ class UrlComponent extends Component {
     }
 
     render() {
-        let url = `http://iseeq-restapi.herokuapp.com/api/iseeq-store/${
+        let url = `http://iseeq-restapi.herokuapp.com/#${
             this.state.selectedCompanyData.company
         }`;
         return (

@@ -29,6 +29,21 @@ var Content = require(path.join(__dirname, './models/Content.js'))(mongoose);
 //routing in duedate-calculator.js
 require(path.join(__dirname, './routes/content.js')).contentManager(app, Content);
 
+// rouing
+var adminIndexPath = path.join(__dirname, './client/admin/public/index.html');
+var adminPublicPath = express.static(path.join(__dirname, './client/admin/public'));
+app.use('/admin', adminPublicPath);
+
+var userIndexPath = path.join(__dirname, './client/user/public/index.html');
+var userPublicPath = express.static(path.join(__dirname, './client/user/public'));
+app.use('/', userPublicPath);
+app.get('/admin', function(_, res) {
+    res.sendFile(adminIndexPath);
+});
+app.get('/', function(_, res) {
+    res.sendFile(userIndexPath);
+});
+
 //create server
 http.listen(app.get('port'), function() {
     console.log('iseeq-content listening on localhost:' + app.get('port'));

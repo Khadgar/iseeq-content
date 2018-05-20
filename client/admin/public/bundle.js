@@ -26538,7 +26538,7 @@ var CompanyDetails = function (_Component) {
                 isValid: true
             },
             data: {
-                value: props.content.data ? JSON.stringify(props.content.data, null, ' ') : "",
+                value: props.content.data ? JSON.stringify(props.content.data, null, " ") : "",
                 isValid: true
             }
         };
@@ -26642,14 +26642,7 @@ var CompanyDetails = function (_Component) {
                             { "for": "urlName" },
                             "Name"
                         ),
-                        _react2.default.createElement(_reactstrap.Input, {
-                            name: "urlName",
-                            id: "urlName",
-                            value: this.state.company.value,
-                            invalid: !this.state.company.isValid,
-                            placeholder: "Name in the URL",
-                            onChange: this.handleUrlNameChange
-                        })
+                        _react2.default.createElement(_reactstrap.Input, { name: "urlName", id: "urlName", value: this.state.company.value, invalid: !this.state.company.isValid, placeholder: "Name in the URL", onChange: this.handleUrlNameChange })
                     ),
                     _react2.default.createElement(
                         _reactstrap.FormGroup,
@@ -26676,24 +26669,21 @@ var CompanyDetails = function (_Component) {
                             { "for": "data" },
                             "Chart Data in JSON"
                         ),
-                        _react2.default.createElement(_reactstrap.Input, {
-                            type: "textarea",
-                            name: "data",
-                            value: this.state.data.value,
-                            invalid: !this.state.data.isValid,
-                            id: "data",
-                            onChange: this.handleDataChange
-                        })
+                        _react2.default.createElement(_reactstrap.Input, { type: "textarea", name: "data", value: this.state.data.value, invalid: !this.state.data.isValid, id: "data", onChange: this.handleDataChange })
                     ),
                     _react2.default.createElement(
-                        _reactstrap.Button,
-                        { onClick: this.handleAddItem },
-                        "Submit"
-                    ),
-                    _react2.default.createElement(
-                        _reactstrap.Button,
-                        { onClick: this.handleClearFormData },
-                        "Reset"
+                        "div",
+                        { className: "CompanyDetails-buttonContainer" },
+                        _react2.default.createElement(
+                            _reactstrap.Button,
+                            { color: "success", onClick: this.handleAddItem },
+                            "Submit"
+                        ),
+                        _react2.default.createElement(
+                            _reactstrap.Button,
+                            { color: "warning", onClick: this.handleClearFormData },
+                            "Reset"
+                        )
                     )
                 )
             );
@@ -26711,7 +26701,7 @@ var CompanyDetails = function (_Component) {
                     isValid: true
                 },
                 data: {
-                    value: nextProps.content.data ? JSON.stringify(nextProps.content.data, null, ' ') : "",
+                    value: nextProps.content.data ? JSON.stringify(nextProps.content.data, null, " ") : "",
                     isValid: true
                 }
             };
@@ -30873,7 +30863,7 @@ exports = module.exports = __webpack_require__(5)(false);
 
 
 // module
-exports.push([module.i, ".CompanyDetails-title {\n  padding-bottom: 20px;\n}\ntextarea {\n  font-family: monospace !important;\n}\n", ""]);
+exports.push([module.i, ".CompanyDetails-title {\n  padding-bottom: 20px;\n}\n.CompanyDetails-buttonContainer {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n}\ntextarea {\n  font-family: monospace !important;\n}\n", ""]);
 
 // exports
 
@@ -30924,7 +30914,7 @@ var UrlComponent = function (_Component) {
     _createClass(UrlComponent, [{
         key: "render",
         value: function render() {
-            var url = "http://iseeq-restapi.herokuapp.com/api/iseeq-store/" + this.state.selectedCompanyData.company;
+            var url = "http://iseeq-restapi.herokuapp.com/#" + this.state.selectedCompanyData.company;
             return _react2.default.createElement(
                 "div",
                 { className: "UrlComponent" },
