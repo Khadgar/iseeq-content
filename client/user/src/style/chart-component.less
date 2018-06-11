@@ -1,7 +1,6 @@
-.main text {
+.main {
     font: 12px sans-serif;
 }
-
 line,
 path,
 .yAxis {
@@ -9,9 +8,13 @@ path,
     stroke: #696969;
     fill: none;
 }
-
-.xAxis {
-    display: none;
+.x_axis_label{
+    text-anchor: end;
+    transform: rotate(-65deg);
+    font: 8px sans-serif;
+}
+.y_axis_label{
+    font: 12px sans-serif;
 }
 circle {
     &.extra {

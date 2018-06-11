@@ -8,7 +8,7 @@ class SalaryChart {
         this.margin = {
             top: 20,
             right: 15,
-            bottom: 60,
+            bottom: 120,
             left: 60
         };
         this.width = 800 - this.margin.left - this.margin.right;
@@ -95,7 +95,6 @@ class SalaryChart {
             .attr("transform", "translate(0," + this.height + ")")
             .attr("class", "xAxis")
             .call(this.xAxis);
-
         // draw the y axis
         this.yAxis = d3
             .axisLeft(this.scaleY)
@@ -164,6 +163,8 @@ class SalaryChart {
                 .attr("x2", (e, t) => {
                     return this.fisheye(t);
                 });
+            this.xAxis.scale(this.fisheye);
+            this.x_axis.call(this.xAxis);
         };
         // chart Container
         this.chartArea = this.main.append("g").attr("class", "chartContainer");
@@ -196,6 +197,11 @@ class SalaryChart {
                 .attr("x2", (e, t) => {
                     return this.scaleX(t);
                 });
+            this.xAxis.scale(this.scaleX);
+            this.x_axis
+                .transition()
+                .duration(500)
+                .call(this.xAxis);
         });
 
         // Set-up the export button
@@ -320,7 +326,12 @@ class SalaryChart {
             .tickFormat(d => (data[d] ? data[d].role : ""))
             .ticks(data.length);
         // x-axis values
-        this.x_axis.call(this.xAxis);
+        this.x_axis
+            .call(this.xAxis)
+            .selectAll("text")
+            .attr("class","x_axis_label")
+            .attr("dx", "-1.1em")
+            .attr("dy", ".15em");
 
         // draw the y axis
         this.yAxis = d3
@@ -329,7 +340,8 @@ class SalaryChart {
             .tickSizeOuter(0)
             .tickPadding(10);
 
-        this.y_axis.call(this.yAxis);
+        this.y_axis.call(this.yAxis)
+        .attr("class","y_axis_label");
 
         // fisheye setup
         this.fisheye = this.Fisheye.scale(d3.scaleLinear)

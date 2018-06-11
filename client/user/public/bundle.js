@@ -40313,7 +40313,7 @@ exports = module.exports = __webpack_require__(23)(false);
 
 
 // module
-exports.push([module.i, ".main text {\n  font: 12px sans-serif;\n}\nline,\npath,\n.yAxis {\n  shape-rendering: crispEdges;\n  stroke: #696969;\n  fill: none;\n}\n.xAxis {\n  display: none;\n}\ncircle.extra {\n  stroke: #ff8000;\n  stroke-width: 3px;\n}\ncircle.junior {\n  stroke: #c70039;\n  stroke-width: 3px;\n}\ncircle.senior {\n  stroke: #a335ee;\n  stroke-width: 3px;\n}\ncircle.regular {\n  stroke: #0070dd;\n  stroke-width: 3px;\n}\n.from {\n  fill: #dcdcdc;\n}\n.to {\n  fill: #dcdcdc;\n}\n.currentValue {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  height: 50px;\n}\n.currentValue-value {\n  padding-top: 10px;\n  display: flex;\n  flex-direction: row;\n}\n.valueName {\n  padding-right: 4px;\n}\n.tick line {\n  opacity: 0.2;\n}\n.link {\n  opacity: 0.8;\n}\n.updateChartData {\n  padding-top: 10px;\n  padding-bottom: 10px;\n}\n.chartArea {\n  display: flex;\n  flex-direction: column;\n  margin-bottom: 20px;\n}\n.chartArea-header {\n  align-self: flex-end;\n}\n.chartValue {\n  display: flex;\n  flex-direction: column;\n  margin-top: 20px;\n  padding: 4px;\n  border: 1px solid #ced4da;\n  border-radius: 3px;\n}\n.chartValue-salary {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  align-self: center;\n}\n.chartValue-salary-value {\n  height: 24px;\n}\n.chartValue-salary-colName {\n  align-self: center;\n}\n.chartValue-role {\n  display: flex;\n  justify-content: space-between;\n}\n.chartValue-seniority {\n  display: flex;\n  justify-content: space-between;\n  text-transform: capitalize;\n}\n", ""]);
+exports.push([module.i, ".main {\n  font: 12px sans-serif;\n}\nline,\npath,\n.yAxis {\n  shape-rendering: crispEdges;\n  stroke: #696969;\n  fill: none;\n}\n.x_axis_label {\n  text-anchor: end;\n  transform: rotate(-65deg);\n  font: 8px sans-serif;\n}\n.y_axis_label {\n  font: 12px sans-serif;\n}\ncircle.extra {\n  stroke: #ff8000;\n  stroke-width: 3px;\n}\ncircle.junior {\n  stroke: #c70039;\n  stroke-width: 3px;\n}\ncircle.senior {\n  stroke: #a335ee;\n  stroke-width: 3px;\n}\ncircle.regular {\n  stroke: #0070dd;\n  stroke-width: 3px;\n}\n.from {\n  fill: #dcdcdc;\n}\n.to {\n  fill: #dcdcdc;\n}\n.currentValue {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  height: 50px;\n}\n.currentValue-value {\n  padding-top: 10px;\n  display: flex;\n  flex-direction: row;\n}\n.valueName {\n  padding-right: 4px;\n}\n.tick line {\n  opacity: 0.2;\n}\n.link {\n  opacity: 0.8;\n}\n.updateChartData {\n  padding-top: 10px;\n  padding-bottom: 10px;\n}\n.chartArea {\n  display: flex;\n  flex-direction: column;\n  margin-bottom: 20px;\n}\n.chartArea-header {\n  align-self: flex-end;\n}\n.chartValue {\n  display: flex;\n  flex-direction: column;\n  margin-top: 20px;\n  padding: 4px;\n  border: 1px solid #ced4da;\n  border-radius: 3px;\n}\n.chartValue-salary {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  align-self: center;\n}\n.chartValue-salary-value {\n  height: 24px;\n}\n.chartValue-salary-colName {\n  align-self: center;\n}\n.chartValue-role {\n  display: flex;\n  justify-content: space-between;\n}\n.chartValue-seniority {\n  display: flex;\n  justify-content: space-between;\n  text-transform: capitalize;\n}\n", ""]);
 
 // exports
 
@@ -40453,7 +40453,7 @@ var SalaryChart = function () {
         this.margin = {
             top: 20,
             right: 15,
-            bottom: 60,
+            bottom: 120,
             left: 60
         };
         this.width = 800 - this.margin.left - this.margin.right;
@@ -40528,7 +40528,6 @@ var SalaryChart = function () {
             }).ticks(data.length);
             // x-axis values
             this.x_axis = this.main.append("g").attr("transform", "translate(0," + this.height + ")").attr("class", "xAxis").call(this.xAxis);
-
             // draw the y axis
             this.yAxis = d3.axisLeft(this.scaleY).tickSizeInner(-this.width).tickSizeOuter(0).tickPadding(10);
 
@@ -40563,6 +40562,8 @@ var SalaryChart = function () {
                 }).attr("x2", function (e, t) {
                     return _this.fisheye(t);
                 });
+                _this.xAxis.scale(_this.fisheye);
+                _this.x_axis.call(_this.xAxis);
             };
             // chart Container
             this.chartArea = this.main.append("g").attr("class", "chartContainer");
@@ -40582,6 +40583,8 @@ var SalaryChart = function () {
                 }).attr("x2", function (e, t) {
                     return _this.scaleX(t);
                 });
+                _this.xAxis.scale(_this.scaleX);
+                _this.x_axis.transition().duration(500).call(_this.xAxis);
             });
 
             // Set-up the export button
@@ -40687,12 +40690,12 @@ var SalaryChart = function () {
                 return data[d] ? data[d].role : "";
             }).ticks(data.length);
             // x-axis values
-            this.x_axis.call(this.xAxis);
+            this.x_axis.call(this.xAxis).selectAll("text").attr("class", "x_axis_label").attr("dx", "-1.1em").attr("dy", ".15em");
 
             // draw the y axis
             this.yAxis = d3.axisLeft(this.scaleY).tickSizeInner(-this.width).tickSizeOuter(0).tickPadding(10);
 
-            this.y_axis.call(this.yAxis);
+            this.y_axis.call(this.yAxis).attr("class", "y_axis_label");
 
             // fisheye setup
             this.fisheye = this.Fisheye.scale(d3.scaleLinear).domain([-1, data.length]).range([0, this.width]).distortion(1);
@@ -54988,17 +54991,7 @@ var Fisheye = function () {
         }
     }, {
         key: "d3_fisheye_scale",
-        value: function (_d3_fisheye_scale) {
-            function d3_fisheye_scale(_x, _x2, _x3) {
-                return _d3_fisheye_scale.apply(this, arguments);
-            }
-
-            d3_fisheye_scale.toString = function () {
-                return _d3_fisheye_scale.toString();
-            };
-
-            return d3_fisheye_scale;
-        }(function (scale, d, a) {
+        value: function d3_fisheye_scale(scale, d, a) {
             function fisheye(_) {
                 var x = scale(_),
                     left = x < a,
@@ -55014,7 +55007,7 @@ var Fisheye = function () {
                 if (!arguments.length) return d;
                 d = +_;
                 return fisheye;
-            };
+            }.bind(this);
 
             fisheye.focus = function (_) {
                 if (!arguments.length) return a;
@@ -55023,14 +55016,14 @@ var Fisheye = function () {
             };
 
             fisheye.copy = function () {
-                return d3_fisheye_scale(scale.copy(), d, a);
-            };
+                return this.d3_fisheye_scale(scale.copy(), d, a);
+            }.bind(this);
 
             fisheye.nice = scale.nice;
             fisheye.ticks = scale.ticks;
             fisheye.tickFormat = scale.tickFormat;
             return this.rebind(fisheye, scale, "domain", "range");
-        })
+        }
     }]);
 
     return Fisheye;
@@ -55271,7 +55264,7 @@ var Utils = function () {
         _classCallCheck(this, Utils);
 
         // Content of chart-component.less
-        this.style = '.main text {  font: 12px sans-serif;}line,path,.yAxis {  shape-rendering: crispEdges;  stroke: #696969;  fill: none;}.xAxis {  display: none;}circle.extra {  stroke: #ff8000;  stroke-width: 3px;}circle.junior {  stroke: #c70039;  stroke-width: 3px;}circle.senior {  stroke: #a335ee;  stroke-width: 3px;}circle.regular {  stroke: #0070dd;  stroke-width: 3px;}.from {  fill: #dcdcdc;}.to {  fill: #dcdcdc;}.currentValue {  display: flex;  flex-direction: row;  justify-content: space-around;  height: 50px;}.currentValue-value {  padding-top: 10px;  display: flex;  flex-direction: row;}.valueName {  padding-right: 4px;}.tick line {  opacity: 0.2;}.link {  opacity: 0.8;}';
+        this.style = '.main{font:12px sans-serif}.chart{background-color:#FFF}.yAxis,line,path{shape-rendering:crispEdges;stroke:#696969;fill:none}.x_axis_label{text-anchor:end;transform:rotate(-65deg);font:9px sans-serif}.y_axis_label{font:12px sans-serif}circle.extra{stroke:#ff8000;stroke-width:3px}circle.junior{stroke:#c70039;stroke-width:3px}circle.senior{stroke:#a335ee;stroke-width:3px}circle.regular{stroke:#0070dd;stroke-width:3px}.from,.to{fill:#dcdcdc}.currentValue{display:flex;flex-direction:row;justify-content:space-around;height:50px}.currentValue-value{padding-top:10px;display:flex;flex-direction:row}.chartArea,.chartValue{flex-direction:column;display:flex}.valueName{padding-right:4px}.tick line{opacity:.2}.link{opacity:.8}.updateChartData{padding-top:10px;padding-bottom:10px}.chartArea{margin-bottom:20px}.chartArea-header{align-self:flex-end}.chartValue{margin-top:20px;padding:4px;border:1px solid #ced4da;border-radius:3px}.chartValue-salary{display:flex;flex-direction:column;justify-content:space-between;align-self:center}.chartValue-salary-value{height:24px}.chartValue-salary-colName{align-self:center}.chartValue-role{display:flex;justify-content:space-between}.chartValue-seniority{display:flex;justify-content:space-between;text-transform:capitalize}';
     }
 
     _createClass(Utils, [{

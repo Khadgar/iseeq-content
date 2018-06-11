@@ -89,7 +89,7 @@ class Fisheye {
             if (!arguments.length) return d;
             d = +_;
             return fisheye;
-        };
+        }.bind(this);
 
         fisheye.focus = function(_) {
             if (!arguments.length) return a;
@@ -97,9 +97,9 @@ class Fisheye {
             return fisheye;
         };
 
-        fisheye.copy = function() {
-            return d3_fisheye_scale(scale.copy(), d, a);
-        };
+        fisheye.copy = function () {
+            return this.d3_fisheye_scale(scale.copy(), d, a);
+        }.bind(this);
 
         fisheye.nice = scale.nice;
         fisheye.ticks = scale.ticks;
