@@ -8,7 +8,7 @@ class SalaryChart {
         this.margin = {
             top: 20,
             right: 15,
-            bottom: 120,
+            bottom: 150,
             left: 60
         };
         this.width = 800 - this.margin.left - this.margin.right;
@@ -259,7 +259,10 @@ class SalaryChart {
                         .map(salary => `${salary} HUF`)
                         .join(" - ")
                 );
-                d3.select(".chartValue-seniority-value").text(d.seniority.split(" ")[0]);
+                d3.select(".chartValue-seniority-value")
+                .text(d.seniority.split(" ")[0]);
+                d3.select(".x_axis_label.label_" + Math.floor(i/2))
+                .classed("highlight", true)
             })
             .on("mouseout", (d, i, nodes) => {
                 // d3.select(".chartValue-salary-value").text('');
@@ -269,6 +272,8 @@ class SalaryChart {
                 d3.selectAll(".from").style("opacity", this.defaultOpacityOfCircles);
                 d3.selectAll(".to").style("opacity", this.defaultOpacityOfCircles);
                 d3.selectAll("." + d.id).classed("active", false);
+                d3.selectAll(".x_axis_label").classed("highlight", false)
+
             })
             .attr("cx", d => d.x)
             .attr("cy", d => d.y);
@@ -329,7 +334,9 @@ class SalaryChart {
         this.x_axis
             .call(this.xAxis)
             .selectAll("text")
-            .attr("class","x_axis_label")
+            .attr("class",(i)=>{
+                return "x_axis_label label_"+ i
+            })
             .attr("dx", "-1.1em")
             .attr("dy", ".15em");
 

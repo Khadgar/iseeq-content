@@ -10,8 +10,13 @@ path,
 }
 .x_axis_label{
     text-anchor: end;
-    transform: rotate(-65deg);
+    transform: rotate(-60deg);
     font: 8px sans-serif;
+    &.highlight{
+        font: 10px sans-serif;
+        transition: font-size 0.1s;
+        font-weight: bold;
+    }
 }
 .y_axis_label{
     font: 12px sans-serif;
@@ -20,18 +25,30 @@ circle {
     &.extra {
         stroke: #ff8000;
         stroke-width: 3px;
+        &.active {
+            fill: #ff8000;
+        }
     }
     &.junior {
         stroke: #c70039;
         stroke-width: 3px;
+        &.active {
+            fill: #c70039;
+        }
     }
     &.senior {
         stroke: #a335ee;
         stroke-width: 3px;
+        &.active {
+            fill: #a335ee;
+        }
     }
     &.regular {
         stroke: #0070dd;
         stroke-width: 3px;
+        &.active {
+            fill: #0070dd;
+        }
     }
 }
 .from {

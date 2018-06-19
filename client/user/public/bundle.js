@@ -40313,7 +40313,7 @@ exports = module.exports = __webpack_require__(23)(false);
 
 
 // module
-exports.push([module.i, ".main {\n  font: 12px sans-serif;\n}\nline,\npath,\n.yAxis {\n  shape-rendering: crispEdges;\n  stroke: #696969;\n  fill: none;\n}\n.x_axis_label {\n  text-anchor: end;\n  transform: rotate(-65deg);\n  font: 8px sans-serif;\n}\n.y_axis_label {\n  font: 12px sans-serif;\n}\ncircle.extra {\n  stroke: #ff8000;\n  stroke-width: 3px;\n}\ncircle.junior {\n  stroke: #c70039;\n  stroke-width: 3px;\n}\ncircle.senior {\n  stroke: #a335ee;\n  stroke-width: 3px;\n}\ncircle.regular {\n  stroke: #0070dd;\n  stroke-width: 3px;\n}\n.from {\n  fill: #dcdcdc;\n}\n.to {\n  fill: #dcdcdc;\n}\n.currentValue {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  height: 50px;\n}\n.currentValue-value {\n  padding-top: 10px;\n  display: flex;\n  flex-direction: row;\n}\n.valueName {\n  padding-right: 4px;\n}\n.tick line {\n  opacity: 0.2;\n}\n.link {\n  opacity: 0.8;\n}\n.updateChartData {\n  padding-top: 10px;\n  padding-bottom: 10px;\n}\n.chartArea {\n  display: flex;\n  flex-direction: column;\n  margin-bottom: 20px;\n}\n.chartArea-header {\n  align-self: flex-end;\n}\n.chartValue {\n  display: flex;\n  flex-direction: column;\n  margin-top: 20px;\n  padding: 4px;\n  border: 1px solid #ced4da;\n  border-radius: 3px;\n}\n.chartValue-salary {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  align-self: center;\n}\n.chartValue-salary-value {\n  height: 24px;\n}\n.chartValue-salary-colName {\n  align-self: center;\n}\n.chartValue-role {\n  display: flex;\n  justify-content: space-between;\n}\n.chartValue-seniority {\n  display: flex;\n  justify-content: space-between;\n  text-transform: capitalize;\n}\n", ""]);
+exports.push([module.i, ".main {\n  font: 12px sans-serif;\n}\nline,\npath,\n.yAxis {\n  shape-rendering: crispEdges;\n  stroke: #696969;\n  fill: none;\n}\n.x_axis_label {\n  text-anchor: end;\n  transform: rotate(-60deg);\n  font: 8px sans-serif;\n}\n.x_axis_label.highlight {\n  font: 10px sans-serif;\n  transition: font-size 0.1s;\n  font-weight: bold;\n}\n.y_axis_label {\n  font: 12px sans-serif;\n}\ncircle.extra {\n  stroke: #ff8000;\n  stroke-width: 3px;\n}\ncircle.extra.active {\n  fill: #ff8000;\n}\ncircle.junior {\n  stroke: #c70039;\n  stroke-width: 3px;\n}\ncircle.junior.active {\n  fill: #c70039;\n}\ncircle.senior {\n  stroke: #a335ee;\n  stroke-width: 3px;\n}\ncircle.senior.active {\n  fill: #a335ee;\n}\ncircle.regular {\n  stroke: #0070dd;\n  stroke-width: 3px;\n}\ncircle.regular.active {\n  fill: #0070dd;\n}\n.from {\n  fill: #dcdcdc;\n}\n.to {\n  fill: #dcdcdc;\n}\n.currentValue {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  height: 50px;\n}\n.currentValue-value {\n  padding-top: 10px;\n  display: flex;\n  flex-direction: row;\n}\n.valueName {\n  padding-right: 4px;\n}\n.tick line {\n  opacity: 0.2;\n}\n.link {\n  opacity: 0.8;\n}\n.updateChartData {\n  padding-top: 10px;\n  padding-bottom: 10px;\n}\n.chartArea {\n  display: flex;\n  flex-direction: column;\n  margin-bottom: 20px;\n}\n.chartArea-header {\n  align-self: flex-end;\n}\n.chartValue {\n  display: flex;\n  flex-direction: column;\n  margin-top: 20px;\n  padding: 4px;\n  border: 1px solid #ced4da;\n  border-radius: 3px;\n}\n.chartValue-salary {\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  align-self: center;\n}\n.chartValue-salary-value {\n  height: 24px;\n}\n.chartValue-salary-colName {\n  align-self: center;\n}\n.chartValue-role {\n  display: flex;\n  justify-content: space-between;\n}\n.chartValue-seniority {\n  display: flex;\n  justify-content: space-between;\n  text-transform: capitalize;\n}\n", ""]);
 
 // exports
 
@@ -40453,7 +40453,7 @@ var SalaryChart = function () {
         this.margin = {
             top: 20,
             right: 15,
-            bottom: 120,
+            bottom: 150,
             left: 60
         };
         this.width = 800 - this.margin.left - this.margin.right;
@@ -40631,6 +40631,7 @@ var SalaryChart = function () {
                     return salary + " HUF";
                 }).join(" - "));
                 d3.select(".chartValue-seniority-value").text(d.seniority.split(" ")[0]);
+                d3.select(".x_axis_label.label_" + Math.floor(i / 2)).classed("highlight", true);
             }).on("mouseout", function (d, i, nodes) {
                 // d3.select(".chartValue-salary-value").text('');
                 // d3.select(".chartValue-role-value").text('');
@@ -40639,6 +40640,7 @@ var SalaryChart = function () {
                 d3.selectAll(".from").style("opacity", _this2.defaultOpacityOfCircles);
                 d3.selectAll(".to").style("opacity", _this2.defaultOpacityOfCircles);
                 d3.selectAll("." + d.id).classed("active", false);
+                d3.selectAll(".x_axis_label").classed("highlight", false);
             }).attr("cx", function (d) {
                 return d.x;
             }).attr("cy", function (d) {
@@ -40690,7 +40692,9 @@ var SalaryChart = function () {
                 return data[d] ? data[d].role : "";
             }).ticks(data.length);
             // x-axis values
-            this.x_axis.call(this.xAxis).selectAll("text").attr("class", "x_axis_label").attr("dx", "-1.1em").attr("dy", ".15em");
+            this.x_axis.call(this.xAxis).selectAll("text").attr("class", function (i) {
+                return "x_axis_label label_" + i;
+            }).attr("dx", "-1.1em").attr("dy", ".15em");
 
             // draw the y axis
             this.yAxis = d3.axisLeft(this.scaleY).tickSizeInner(-this.width).tickSizeOuter(0).tickPadding(10);
